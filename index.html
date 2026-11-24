@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VerbForms — Неправильные глаголы</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo" onclick="showScreen('home')">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">VerbForms</span>
+      </div>
+      <nav class="nav">
+        <button class="nav-btn" data-screen="home">Главная</button>
+        <button class="nav-btn" data-screen="practice">Практика</button>
+        <button class="nav-btn" data-screen="list">Список</button>
+        <button class="nav-btn" data-screen="progress">Прогресс</button>
+      </nav>
+    </header>
+
+    <!-- HOME SCREEN -->
+    <main id="screen-home" class="screen active">
+      <section class="hero">
+        <h1>Неправильные глаголы<br><span class="accent">без боли</span></h1>
+        <p class="hero-sub">Учи три формы по уровням сложности. От простого выбора до полного написания.</p>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-num" id="total-verbs">120</div>
+            <div class="stat-label">глаголов</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num" id="learned-count">0</div>
+            <div class="stat-label">выучено</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num" id="streak-count">0</div>
+            <div class="stat-label">дней подряд</div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="showScreen('practice')">Начать практику</button>
+      </section>
+
+      <section class="modes-preview">
+        <h2>Три уровня сложности</h2>
+        <div class="modes-grid">
+          <div class="mode-card easy" onclick="startPractice('easy')">
+            <div class="mode-badge">Easy</div>
+            <h3>Выбор ответа</h3>
+            <p>Даём глагол и 4 варианта. Идеально для знакомства.</p>
+          </div>
+          <div class="mode-card medium" onclick="startPractice('medium')">
+            <div class="mode-badge">Medium</div>
+            <h3>Заполнить пропуски</h3>
+            <p>Пишешь недостающие формы. Хорошая тренировка.</p>
+          </div>
+          <div class="mode-card hard" onclick="startPractice('hard')">
+            <div class="mode-badge">Hard</div>
+            <h3>Все три формы</h3>
+            <p>Пишешь Base, Past и Participle полностью сам.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- PRACTICE SCREEN -->
+    <main id="screen-practice" class="screen">
+      <div class="practice-setup" id="practice-setup">
+        <h2>Выбери режим и группу</h2>
+        
+        <div class="setup-section">
+          <label>Сложность</label>
+          <div class="option-group">
+            <button class="option-btn active" data-mode="easy">Easy</button>
+            <button class="option-btn" data-mode="medium">Medium</button>
+            <button class="option-btn" data-mode="hard">Hard</button>
+          </div>
+        </div>
+
+        <div class="setup-section">
+          <label>Группа глаголов</label>
+          <div class="option-group">
+            <button class="option-btn active" data-group="all">Все</button>
+            <button class="option-btn" data-group="core">Core (A1)</button>
+            <button class="option-btn" data-group="common">Common (A2)</button>
+            <button class="option-btn" data-group="useful">Useful (B1)</button>
+            <button class="option-btn" data-group="advanced">Advanced</button>
+          </div>
+        </div>
+
+        <div class="setup-section">
+          <label>Количество вопросов</label>
+          <div class="option-group">
+            <button class="option-btn" data-count="10">10</button>
+            <button class="option-btn active" data-count="20">20</button>
+            <button class="option-btn" data-count="30">30</button>
+            <button class="option-btn" data-count="0">Все</button>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-lg" id="start-btn">Начать</button>
+      </div>
+
+      <!-- Active practice -->
+      <div class="practice-active hidden" id="practice-active">
+        <div class="practice-header">
+          <button class="btn-text" onclick="exitPractice()">← Выйти</button>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <div class="score" id="score-display">0 / 0</div>
+        </div>
+
+        <div class="question-card" id="question-card">
+          <!-- Dynamic content -->
+        </div>
+
+        <div class="feedback hidden" id="feedback">
+          <!-- Feedback after answer -->
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="practice-results hidden" id="practice-results">
+        <div class="results-card">
+          <h2>Готово!</h2>
+          <div class="results-score" id="final-score">0 / 0</div>
+          <p class="results-percent" id="final-percent">0%</p>
+          <div class="results-message" id="results-message"></div>
+          <div class="results-actions">
+            <button class="btn btn-primary" onclick="restartPractice()">Ещё раз</button>
+            <button class="btn btn-secondary" onclick="showScreen('home')">На главную</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- LIST SCREEN -->
+    <main id="screen-list" class="screen">
+      <div class="list-header">
+        <h2>Список глаголов</h2>
+        <div class="list-filters">
+          <input type="text" id="search-input" placeholder="Поиск..." class="search-input">
+          <select id="filter-level">
+            <option value="all">Все уровни</option>
+            <option value="A1">A1</option>
+            <option value="A2">A2</option>
+            <option value="B1">B1</option>
+            <option value="B2">B2</option>
+          </select>
+        </div>
+      </div>
+      <div class="verbs-table-wrapper">
+        <table class="verbs-table" id="verbs-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Base</th>
+              <th>Past</th>
+              <th>Participle</th>
+              <th>Перевод</th>
+              <th>Уровень</th>
+            </tr>
+          </thead>
+          <tbody id="verbs-tbody">
+            <!-- Filled by JS -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- PROGRESS SCREEN -->
+    <main id="screen-progress" class="screen">
+      <h2>Твой прогресс</h2>
+      <div class="progress-overview">
+        <div class="progress-card">
+          <div class="progress-circle" id="progress-circle">
+            <span id="progress-percent">0%</span>
+          </div>
+          <p>Общий прогресс</p>
+        </div>
+        <div class="progress-stats-grid">
+          <div class="p-stat">
+            <div class="p-stat-num" id="known-count">0</div>
+            <div class="p-stat-label">Знаю хорошо</div>
+          </div>
+          <div class="p-stat">
+            <div class="p-stat-num" id="learning-count">0</div>
+            <div class="p-stat-label">Учу</div>
+          </div>
+          <div class="p-stat">
+            <div class="p-stat-num" id="weak-count">0</div>
+            <div class="p-stat-label">Слабые</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="weak-section">
+        <h3>Глаголы, которые стоит повторить</h3>
+        <div id="weak-list" class="weak-list">
+          <p class="empty-state">Пока нет данных. Пройди несколько тренировок.</p>
+        </div>
+      </div>
+
+      <button class="btn btn-secondary" onclick="resetProgress()">Сбросить прогресс</button>
+    </main>
+  </div>
+
+  <script src="verbs.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
